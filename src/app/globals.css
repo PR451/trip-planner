@@ -31,3 +31,13 @@ body {
     text-wrap: balance;
   }
 }
+
+.login-btn {
+  background-color: white;
+  border: 1px solid black;
+}
+
+.secret-word-input {
+  border: 2px solid black;
+  border-radius: 4px; /* Optional: adds rounded corners */
+}

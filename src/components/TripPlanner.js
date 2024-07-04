@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 
 const TripPlanner = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -82,6 +82,28 @@ const TripPlanner = () => {
     } else {
       setError('Please enter a valid username.');
     }
+  };
+
+  const handleDeleteUser = (userToDelete) => {
+    const newUsers = users.filter(user => user !== userToDelete);
+    setUsers(newUsers);
+    
+    // Remove user from availability data
+    const newAvailability = { ...availability };
+    Object.keys(newAvailability).forEach(date => {
+      newAvailability[date] = newAvailability[date].filter(user => user !== userToDelete);
+      if (newAvailability[date].length === 0) {
+        delete newAvailability[date];
+      }
+    });
+    
+    setAvailability(newAvailability);
+    
+    if (selectedUser === userToDelete) {
+      setSelectedUser('');
+    }
+    
+    saveData(newUsers, newAvailability);
   };
 
   const handleDateClick = (date) => {
@@ -186,14 +208,14 @@ const TripPlanner = () => {
   if (!isLoggedIn) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <Input
+        <Input style={{ border: '1px solid black' }} 
           type="password"
           placeholder="Enter secret word"
           value={secretWord}
           onChange={(e) => setSecretWord(e.target.value)}
           className="mb-4"
         />
-        <Button onClick={handleLogin}>Login</Button>
+        <Button style={{ border: '1px solid black' }}  onClick={handleLogin}>Login</Button>
         {error && <p className="text-red-500 mt-2">{error}</p>}
       </div>
     );
@@ -235,14 +257,22 @@ return (
         <div className="mb-4">
             <h3 className="font-bold">Users:</h3>
             <div className="flex flex-wrap">
-                {users.map((user, index) => (
-                    <div 
-                        key={user} 
-                        className={`m-1 p-2 rounded ${colors[index % colors.length]} text-white`}
-                    >
-                        {user}
-                    </div>
-                ))}
+            {users.map((user, index) => (
+                <div 
+                key={user} 
+                className={`m-1 p-2 rounded ${colors[index % colors.length]} text-white flex items-center`}
+                >
+                {user}
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="ml-2 text-white hover:text-red-200"
+                    onClick={() => handleDeleteUser(user)}
+                >
+                    <Trash2 className="h-4 w-4" />
+                </Button>
+                </div>
+            ))}
             </div>
         </div>
         {renderCalendar()}
