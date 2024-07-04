@@ -180,7 +180,8 @@ const TripPlanner = () => {
 
     return (
       <Card className="mt-4">
-        <CardHeader className="flex justify-between items-center">
+      <CardHeader className="flex justify-center items-center">
+        <div className="flex items-center space-x-4"> {/* Adjusted part: Wrapped buttons and date in a div with space-x-4 for spacing */}
           <Button onClick={() => changeMonth(-1)} variant="outline" size="icon">
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -190,18 +191,19 @@ const TripPlanner = () => {
           <Button onClick={() => changeMonth(1)} variant="outline" size="icon">
             <ChevronRight className="h-4 w-4" />
           </Button>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-7 gap-1">
-            {days.map(day => (
-              <div key={day} className="text-center font-bold">
-                {day}
-              </div>
-            ))}
-            {calendar}
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-7 gap-1">
+          {days.map(day => (
+            <div key={day} className="text-center font-bold">
+              {day}
+            </div>
+          ))}
+          {calendar}
+        </div>
+      </CardContent>
+    </Card>
     );
   };
 
