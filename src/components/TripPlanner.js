@@ -20,35 +20,34 @@ const TripPlanner = () => {
 
   const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-orange-500'];
 
-  const loadData = () => {
+  const loadData = async () => {
     try {
-      const savedData = localStorage.getItem('tripPlannerData');
-      console.log('Loaded data:', savedData);
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        if (parsedData && typeof parsedData === 'object') {
-          setUsers(parsedData.users || []);
-          setAvailability(parsedData.availability || {});
-          console.log('Parsed data:', parsedData);
-          return true;
-        }
-      }
+      const response = await fetch('/api/tripPlanner');
+      const data = await response.json();
+      setUsers(data.users || []);
+      setAvailability(data.availability || {});
+      return true;
     } catch (err) {
-      console.error('Error loading data from localStorage:', err);
+      console.error('Error loading data:', err);
+      setError('Failed to load saved data. Starting with empty planner.');
+      return false;
     }
-    return false;
   };
 
-  const saveData = (newUsers, newAvailability) => {
+  const saveData = async (newUsers, newAvailability) => {
     try {
-      const dataToSave = JSON.stringify({
-        users: newUsers || users,
-        availability: newAvailability || availability
+      await fetch('/api/tripPlanner', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          users: newUsers || users,
+          availability: newAvailability || availability
+        }),
       });
-      localStorage.setItem('tripPlannerData', dataToSave);
-      console.log('Saved data:', dataToSave);
     } catch (err) {
-      console.error('Error saving data to localStorage:', err);
+      console.error('Error saving data:', err);
       setError('Failed to save data. Your changes may not persist after reload.');
     }
   };
