@@ -60,7 +60,7 @@ const TripPlanner = () => {
   }, []);
 
   const handleLogin = () => {
-    if (secretWord === 'triptime2023') {
+    if (secretWord === 'triptime2024') {
       setIsLoggedIn(true);
       setError(null);
     } else {
